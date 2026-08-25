@@ -1,3 +1,34 @@
+"""
+Tema 3 — Algoritmo automático de verificação de sobremodulação
+
+DISCUSSÃO TÉCNICA E ENGENHARIA DO SISTEMA REAL (Item 6 do Roteiro):
+================================================================
+Por que a verificação automática de sobremodulação é indispensável em um transmissor AM real?
+
+1. Garantia da Demodulação Sem Distorção por Detecção de Envoltório:
+   A detecção por diodo/envoltório baseia-se na premissa física de que o envelope (A + m(t))
+   é estritamente não-negativo (A + m(t) >= 0). Caso m(t) apresente picos negativos menores que -A,
+   ocorre inversão de fase na portadora nos cruzamentos de zero e ceifamento do envelope recuperado.
+   Isso destrói a fidelidade do áudio transmitido, gerando distorção harmônica e de intermodulação.
+
+2. Ajuste Automático de Ganho (CAG / AGC) e Nível de Portadora:
+   Em um transmissor digital/SDR (Software Defined Radio) ou analógico moderno, o cálculo em tempo real
+   de a_min = max(-m(t)) permite alimentar uma malha de controle automático. O sistema pode ajustar 
+   dinamicamente o ganho do sinal de áudio m(t) antes da modulação ou ajustar a amplitude A da portadora
+   para manter o índice de modulação (μ = m_max / A) o mais próximo possível de 1.0 (máxima eficiência
+   de potência transmitida) sem ultrapassar o limite crítico (μ > 1).
+
+3. Contenção de Espectro RF (Prevenção de 'Splatter' / Transbordamento Espectral):
+   A sobremodulação provoca descontinuidades abruptas de fase e ceifamento da onda modulada. No domínio
+   da frequência, isso se traduz por um enorme espalhamento espectral (RF splatter), gerando harmônicos
+   e interferência em canais adjacentes, o que viola severamente as regulamentações de telecomunicações (ex: ANATEL/FCC).
+
+4. Proteção de Hardware e Amplificadores de Potência (PA):
+   Sinais sobremodulados impõem excursões de tensão e corrente imprevisíveis nos estágios finais de RF,
+   podendo levar os transistores de potência a regiões de saturação severa ou superaquecimento por
+   dissipação térmica excessiva.
+"""
+
 import json;
 import numpy as np;
 import pandas as pd;

@@ -16,9 +16,10 @@ def generate_signal(config):
         sig = params['amp1'] * np.sin(2.0 * np.pi * params['freq1'] * t) + params['amp2'] * np.sin(2.0 * np.pi * params['freq2'] * t);
         return sig;
 
-    elif sig_type == 'sawtooth':
+    elif sig_type == 'sawtooth' or sig_type == 'triangular':
         t = np.linspace(0.0, params['duration'], int(params['sample_rate'] * params['duration']), endpoint=False);
-        return params['amplitude'] * signal.sawtooth(2.0 * np.pi * params['frequency'] * t);
+        width = params.get('width', 0.5); # width=0.5 gera onda triangular simétrica
+        return params['amplitude'] * signal.sawtooth(2.0 * np.pi * params['frequency'] * t, width=width);
 
     elif sig_type == 'noise':
         np.random.seed(params.get('seed', 42));

@@ -25,13 +25,14 @@
 			"A_values": [2.0, 2.6]
 		},
 		{
-			"name": "Sinal dente de serra",
-			"type": "sawtooth",
+			"name": "Sinal triangular",
+			"type": "triangular",
 			"params": {
 				"frequency": 5.0,
 				"amplitude": 3.0,
 				"duration": 1.0,
-				"sample_rate": 1000.0
+				"sample_rate": 1000.0,
+				"width": 0.5
 			},
 			"A_values": [2.8, 3.2]
 		},

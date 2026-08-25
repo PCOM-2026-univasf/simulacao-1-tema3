@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOBREMODULAÇÃO AM — Verificador Automático</title>
+  <meta name="description" content="Ferramenta interativa para análise e verificação automática de sobremodulação AM e cálculo de portadora mínima a_min.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-title">
+        <h1>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-red);"><path d="M2 12h3l3-9 6 18 3-9h4"/></svg>
+          SOBREMODULAÇÃO AM
+        </h1>
+        <p>Verificação de Demodulabilidade e Análise da Portadora Mínima a<sub>min</sub></p>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      
+      <!-- Sidebar Controls & Metrics -->
+      <aside class="control-sidebar">
+        
+        <!-- Case Selector & Status Badge Card -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M14 9h7"/><path d="M14 15h7"/></svg>
+              Diagnóstico do Sinal
+            </span>
+          </div>
+
+          <!-- Status Semaphore Badge -->
+          <div id="statusBadge" class="status-semaphore ok" style="margin-bottom: 1.25rem;">
+            <div class="status-dot"></div>
+            <span id="statusText">VERIFICAÇÃO: OK</span>
+          </div>
+
+          <div class="control-group">
+            
+            <div class="form-field">
+              <label for="caseSelector"><span>Caso de Teste:</span></label>
+              <select id="caseSelector">
+                <option value="sine">1. Seno simples</option>
+                <option value="dual_sine">2. Soma de dois senos</option>
+                <option value="triangular">3. Sinal triangular</option>
+                <option value="noise">4. Ruído aleatório</option>
+                <option value="audio">5. Sinal de Áudio Real</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="carrierAmp">
+                <span>Amplitude Portadora (A):</span>
+                <span id="valCarrierAmp" class="value-display">2.50</span>
+              </label>
+              <input type="range" id="carrierAmp" min="0.01" max="6.0" step="0.05" value="2.50">
+            </div>
+
+            <div class="form-field">
+              <label for="carrierFreq">
+                <span>Frequência Portadora (f<sub>c</sub>):</span>
+                <span id="valCarrierFreq" class="value-display">80 Hz</span>
+              </label>
+              <input type="range" id="carrierFreq" min="20" max="200" step="5" value="80">
+            </div>
+
+            <div class="form-field">
+              <label for="modFreq">
+                <span>Frequência Modulante (f<sub>m</sub>):</span>
+                <span id="valModFreq" class="value-display">5 Hz</span>
+              </label>
+              <input type="range" id="modFreq" min="1" max="30" step="1" value="5">
+            </div>
+
+            <div class="form-field">
+              <label for="modAmp">
+                <span>Ganho / Amplitude (A<sub>m</sub>):</span>
+                <span id="valModAmp" class="value-display">2.00</span>
+              </label>
+              <input type="range" id="modAmp" min="0.1" max="5.0" step="0.1" value="2.00">
+            </div>
+
+            <!-- Dynamic Metrics -->
+            <div class="metrics-row">
+              <div id="cardAMin" class="metric-card">
+                <div class="metric-label">a<sub>min</sub> Sugerido</div>
+                <div id="valAMin" class="metric-value">2.00</div>
+              </div>
+              <div id="cardModIndex" class="metric-card">
+                <div class="metric-label">Índice µ = m<sub>max</sub> / A</div>
+                <div id="valModIndex" class="metric-value">0.80</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Main Graphics Panels -->
+      <main class="main-panels">
+        
+        <!-- Animated Oscilloscope Panel -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Osciloscópio Dinâmico AM (Tempo Real)
+            </span>
+            <div class="btn-group">
+              <button id="btnToggleAnim" class="btn btn-secondary">Pausar Animação</button>
+              <button id="btnExportOsc" class="btn btn-secondary">Salvar PNG</button>
+            </div>
+          </div>
+
+          <div class="canvas-container">
+            <span id="canvasTagOsc" class="canvas-tag">Osciloscópio Temporal AM</span>
+            <canvas id="oscilloscopeCanvas"></canvas>
+          </div>
+
+          <!-- Color Legend with Distinct Colors -->
+          <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.85rem; font-size: 0.8rem; flex-wrap: wrap;">
+            <span style="color: #38bdf8; display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 500;">
+              <span style="display: inline-block; width: 14px; height: 3px; background: #38bdf8;"></span> Modulante m(t)
+            </span>
+            <span style="color: #f59e0b; display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 500;">
+              <span style="display: inline-block; width: 14px; height: 3px; background: #f59e0b; border-top: 1px dashed #f59e0b;"></span> Envoltória ±[A + m(t)]
+            </span>
+            <span style="color: #818cf8; display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 500;">
+              <span style="display: inline-block; width: 14px; height: 3px; background: #818cf8;"></span> Sinal AM s(t)
+            </span>
+            <span style="color: var(--accent-red); display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600;">
+              <span style="display: inline-block; width: 10px; height: 10px; background: rgba(239, 68, 68, 0.4); border: 1px solid var(--accent-red);"></span> Zona Sobremodulada (Alerta)
+            </span>
+          </div>
+        </div>
+
+        <!-- Charts & Table Row Grid -->
+        <div class="charts-grid">
+          
+          <!-- Semaphore Scatter Plot Card -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                Gráfico Tipo Semáforo
+              </span>
+              <button id="btnExportSem" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">PNG</button>
+            </div>
+            <div class="canvas-container" style="height: 240px;">
+              <canvas id="semaphoreCanvas"></canvas>
+            </div>
+            <!-- Semáforo Legend -->
+            <div style="display: flex; gap: 1.2rem; justify-content: center; margin-top: 0.65rem; font-size: 0.75rem; flex-wrap: wrap;">
+              <span style="color: #10b981; display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 600;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span> OK (Sem Sobremodulação)
+              </span>
+              <span style="color: #ef4444; display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 600;">
+                <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444;"></span> Sobremodulado
+              </span>
+              <span style="color: #38bdf8; display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 600;">
+                <span style="display: inline-block; font-weight: bold; color: #38bdf8;">✕</span> a<sub>min</sub> Sugerido
+              </span>
+            </div>
+          </div>
+
+          <!-- Summary Table Card -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Tabela-Resumo de Testes
+              </span>
+              <div class="btn-group">
+                <button id="btnExportCSV" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">CSV</button>
+                <button id="btnExportJSON" class="btn btn-secondary" style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">JSON</button>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table id="summaryTable">
+                <thead>
+                  <tr>
+                    <th>Caso de Teste</th>
+                    <th>A Testado</th>
+                    <th>a<sub>min</sub> Sugerido</th>
+                    <th>Resultado</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                  <!-- Inserido dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Ferramenta Interativa de Análise e Diagnóstico de Modulação AM</p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
