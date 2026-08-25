@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ------------------------------------------------------------------------
-  // 1. Data Definitions & Test Cases
+  // 1. Data Definitions & Test Cases (3 A values per test case)
   // ------------------------------------------------------------------------
   const TEST_CASES = [
     {
@@ -14,35 +14,35 @@ document.addEventListener('DOMContentLoaded', () => {
       name: 'Seno simples',
       type: 'sine',
       params: { freq: 5.0, amp: 2.0 },
-      A_values: [1.5, 2.5]
+      A_values: [1.0, 2.0, 3.0]
     },
     {
       id: 'dual_sine',
       name: 'Soma de dois senos',
       type: 'dual_sine',
       params: { freq1: 5.0, amp1: 1.5, freq2: 15.0, amp2: 0.8 },
-      A_values: [2.0, 2.6]
+      A_values: [1.5, 2.4, 3.2]
     },
     {
       id: 'triangular',
       name: 'Sinal triangular',
       type: 'triangular',
       params: { freq: 5.0, amp: 3.0, width: 0.5 },
-      A_values: [2.8, 3.2]
+      A_values: [2.0, 3.0, 4.0]
     },
     {
       id: 'noise',
       name: 'Ruído aleatório',
       type: 'noise',
       params: { scale: 1.0, seed: 42 },
-      A_values: [2.0, 4.0]
+      A_values: [1.8, 3.2, 4.5]
     },
     {
       id: 'audio',
       name: 'Sinal de Áudio Real',
       type: 'audio',
       params: { filePath: 'xaropinho-rapaz.wav' },
-      A_values: [0.05, 0.25]
+      A_values: [0.10, 0.25, 0.50]
     }
   ];
 
