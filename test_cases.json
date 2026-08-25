@@ -1,0 +1,58 @@
+{
+	"test_cases": [
+		{
+			"name": "Seno simples",
+			"type": "sine",
+			"params": {
+				"frequency": 10.0,
+				"amplitude": 2.0,
+				"duration": 1.0,
+				"sample_rate": 1000.0
+			},
+			"A_values": [1.5, 2.5]
+		},
+		{
+			"name": "Soma de dois senos",
+			"type": "dual_sine",
+			"params": {
+				"freq1": 5.0,
+				"amp1": 1.5,
+				"freq2": 15.0,
+				"amp2": 0.8,
+				"duration": 1.0,
+				"sample_rate": 1000.0
+			},
+			"A_values": [2.0, 2.6]
+		},
+		{
+			"name": "Sinal dente de serra",
+			"type": "sawtooth",
+			"params": {
+				"frequency": 5.0,
+				"amplitude": 3.0,
+				"duration": 1.0,
+				"sample_rate": 1000.0
+			},
+			"A_values": [2.8, 3.2]
+		},
+		{
+			"name": "Ruído aleatório",
+			"type": "noise",
+			"params": {
+				"scale": 1.0,
+				"duration": 1.0,
+				"sample_rate": 1000.0,
+				"seed": 42
+			},
+			"A_values": [2.0, 4.0]
+		},
+		{
+			"name": "Xaropinho falando 'rapaz'",
+			"type": "audio",
+			"params": {
+				"file_path": "xaropinho-rapaz.wav"
+			},
+			"A_values": [0.05, 0.25]
+		}
+	]
+}

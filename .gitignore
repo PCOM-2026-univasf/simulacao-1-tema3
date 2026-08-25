@@ -1,0 +1,12 @@
+# Python bytecode e arquivos temporários
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual local
+venv/
+.venv/
+
+# Imagens de saída da simulação (geradas localmente)
+visualizacao_semaforo.png
